@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Karishma ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: radial-gradient(circle, #1a1a2e, #0f0c29);
+    overflow: hidden;
+}
+
+/* Center */
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Button */
+button {
+    padding: 15px 25px;
+    border-radius: 30px;
+    border: none;
+    background: #ff4b7d;
+    color: white;
+    font-size: 18px;
+}
+
+/* Envelope */
+.envelope {
+    width: 220px;
+    height: 140px;
+    background: #ff4b7d;
+    position: relative;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Flap */
+.flap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #ff6b9a;
+    clip-path: polygon(0 0, 50% 60%, 100% 0);
+    transform-origin: top;
+    transition: 0.6s;
+}
+
+.open .flap {
+    transform: rotateX(180deg);
+}
+
+/* Letter */
+.letter {
+    width: 270px;
+    height: 350px;
+    position: absolute;
+    top: 20px;
+    left: -25px;
+    transform: translateY(120px);
+    opacity: 0;
+    transition: 0.6s;
+}
+
+.open .letter {
+    transform: translateY(-100px);
+    opacity: 1;
+}
+
+/* Paper */
+.paper {
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), linear-gradient(#fffdf5, #f5e6cc);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    overflow-y: auto;
+}
+
+/* Text */
+#text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #2b2b2b;
+    white-space: pre-line;
+}
+
+/* Photo */
+.photo {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Kiss */
+.kiss {
+    font-size: 28px;
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* Hearts */
+.heart {
+    position: absolute;
+    color: pink;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); }
+    100% { transform: translateY(-10vh); }
+}
+
+/* Sparkles */
+.sparkle {
+    position: absolute;
+    color: white;
+    animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+    0%,100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* Ending */
+#ending {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    color: pink;
+    text-shadow: 0 0 20px pink;
+    text-align: center;
+    padding: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="center" id="startScreen">
+    <h2 style="color:white;">For Karishma ❤️</h2>
+    <button onclick="start()">Open Your Letter 💌</button>
+</div>
+
+<div class="center" id="envScreen" style="display:none;">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div class="flap"></div>
+
+        <div class="letter">
+            <div class="paper">
+                <img src="photo.jpg" class="photo">
+                <div id="text"></div>
+                <div class="kiss">💋</div>
+            </div>
+        </div>
+    </div>
+    <p style="color:white;">Tap the envelope ❤️</p>
+</div>
+
+<div id="ending">
+I LOVE YOU ❤️ HAPPY B'DAY MERI KARISHMA 🎂
+</div>
+
+<audio id="music" loop>
+    <source src="song.mp3">
+</audio>
+
+<audio id="typingSound">
+    <source src="https://www.soundjay.com/mechanical/sounds/typewriter-key-1.mp3">
+</audio>
+
+<script>
+
+function start() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("envScreen").style.display = "block";
+}
+
+function openEnvelope() {
+    document.getElementById("envelope").classList.add("open");
+    document.getElementById("music").play();
+    typeWriter();
+}
+
+const message = `I'm so thankful for this day as it is the day of my life's light, my another half.
+
+You have filled my life with joy and love. I'm thankful that I could find a partner, a best friend, and an adopted child in one person.
+
+It's a joy to listen to your banters, your daily rants, and your silly jokes.
+
+If I ever die, I would love to die in a room with speakers that play the sound of your laugh.
+
+I have become a better man with you my love, and not only a better man… a better mother also 😄
+
+But jokes apart, it's been an absolute pleasure to share my life with you.
+
+You are one of the kindest and most loyal person I know and I'm thankful that you came in my life and blessed me with your presence.
+
+It surprises me sometimes how much I'm in love with you…
+
+Happy birthday my love meri betu meri Karishma ❤️`;
+
+let i = 0;
+function typeWriter() {
+    if (i < message.length) {
+        document.getElementById("text").innerHTML += message.charAt(i);
+
+        let sound = document.getElementById("typingSound");
+        sound.currentTime = 0;
+        sound.play();
+
+        i++;
+        setTimeout(typeWriter, 20);
+    } else {
+        setTimeout(() => {
+            document.getElementById("envScreen").style.display = "none";
+            document.getElementById("ending").style.display = "block";
+        }, 2500);
+    }
+}
+
+// Hearts
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 300);
+
+// Sparkles
+function createSparkle() {
+    const s = document.createElement("div");
+    s.classList.add("sparkle");
+    s.innerHTML = "✨";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.top = Math.random() * 100 + "vh";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 2000);
+}
+setInterval(createSparkle, 500);
+
+</script>
+
+</body>
+</html>
