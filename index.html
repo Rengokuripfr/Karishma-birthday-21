@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Girlfriend's Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine-deep:   #2a1420;
+    --wine-mid:    #3d1e2c;
+    --ivory:       #f6ecd9;
+    --ivory-dim:   #ece0c8;
+    --gold:        #c9a15a;
+    --gold-bright: #e3c07f;
+    --ink:         #4a2f2f;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% 20%, var(--wine-mid) 0%, var(--wine-deep) 60%, #190c14 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-family:'Cormorant Garamond', serif;
+    position:relative;
+  }
+
+  /* ambient drifting light motes -- restrained, not confetti */
+  .mote{
+    position:absolute;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(227,192,127,0.55), rgba(227,192,127,0) 70%);
+    animation:drift linear infinite;
+    pointer-events:none;
+  }
+  @keyframes drift{
+    from{ transform:translateY(110vh) translateX(0); opacity:0; }
+    10%{ opacity:0.7; }
+    90%{ opacity:0.5; }
+    to{ transform:translateY(-10vh) translateX(20px); opacity:0; }
+  }
+
+  .stage{
+    position:relative;
+    width:min(92vw, 460px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:34px;
+    z-index:2;
+  }
+
+  .eyebrow{
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold-bright);
+    font-family:'Cormorant Garamond', serif;
+    opacity:0.85;
+  }
+
+  h1.title{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    color:var(--ivory);
+    font-size:clamp(28px, 6vw, 40px);
+    margin:0;
+    text-align:center;
+    letter-spacing:0.01em;
+  }
+
+  .hint{
+    color:var(--ivory-dim);
+    font-size:16px;
+    opacity:0.55;
+    margin-top:-16px;
+    transition:opacity .4s ease;
+  }
+  .stage.opened .hint{ opacity:0; }
+
+  /* ===== Envelope ===== */
+  .envelope-wrap{
+    width:320px;
+    max-width:80vw;
+    aspect-ratio: 16 / 10.5;
+    position:relative;
+    cursor:pointer;
+    perspective:1400px;
+    transition:transform .5s ease;
+  }
+  .envelope-wrap:hover{ transform:translateY(-4px); }
+  .stage.opened .envelope-wrap{ cursor:default; }
+  .stage.opened .envelope-wrap:hover{ transform:none; }
+
+  .envelope-body{
+    position:absolute; inset:0;
+    background: linear-gradient(160deg, #efe1c6, #e4d2ac 55%, #d9c396);
+    border-radius:6px;
+    box-shadow:
+      0 18px 40px rgba(0,0,0,0.45),
+      0 2px 0 rgba(255,255,255,0.15) inset;
+    overflow:hidden;
+  }
+
+  /* subtle paper texture via layered gradients */
+  .envelope-body::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 6px);
+    mix-blend-mode:overlay;
+    opacity:0.5;
+  }
+
+  .envelope-body::after{
+    /* inner side triangles (the open-envelope look) */
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(135deg, transparent 49.6%, rgba(0,0,0,0.12) 50%, transparent 50.4%),
+      linear-gradient(45deg, transparent 49.6%, rgba(0,0,0,0.12) 50%, transparent 50.4%);
+  }
+
+  .flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:60%;
+    background: linear-gradient(155deg, #f1e4c9, #ddc79c 60%, #d1b688);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 1.1s cubic-bezier(.61,-0.16,.31,1.19);
+    z-index:5;
+    box-shadow:0 1px 0 rgba(255,255,255,0.25) inset;
+  }
+  .stage.opened .flap{
+    transform: rotateX(180deg);
+    z-index:1;
+  }
+
+  .seal{
+    position:absolute;
+    top:52%; left:50%;
+    width:58px; height:58px;
+    transform:translate(-50%,-50%);
+    z-index:6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:opacity .5s ease .1s, transform .6s ease .1s;
+  }
+  .seal-half{
+    position:absolute;
+    width:58px; height:58px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #d9b06a, #a8702f 70%, #8a541f);
+    box-shadow:0 3px 8px rgba(0,0,0,0.4);
+  }
+  .seal-half.left{ clip-path:inset(0 50% 0 0); transition:transform .55s ease; }
+  .seal-half.right{ clip-path:inset(0 0 0 50%); transition:transform .55s ease; }
+  .seal-glyph{
+    position:relative; z-index:2;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    color:#3a230f;
+    font-size:22px;
+    opacity:0.85;
+  }
+  .stage.opened .seal-half.left{ transform:translateX(-14px) rotate(-12deg); }
+  .stage.opened .seal-half.right{ transform:translateX(14px) rotate(12deg); }
+  .stage.opened .seal-glyph{ opacity:0; transition:opacity .2s ease; }
+
+  .tap-label{
+    position:absolute;
+    bottom:14px; left:0; right:0;
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:#6b4a2e;
+    opacity:0.6;
+    z-index:6;
+    transition:opacity .4s ease;
+  }
+  .stage.opened .tap-label{ opacity:0; }
+
+  /* the letter card peeking, then rising out */
+  .letter-card{
+    position:absolute;
+    left:6%; right:6%;
+    top:14%;
+    height:78%;
+    background: linear-gradient(180deg, var(--ivory), var(--ivory-dim));
+    border-radius:3px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+    z-index:3;
+    transform: translateY(6%);
+    transition: transform 1s cubic-bezier(.2,.7,.3,1) .25s, box-shadow .6s ease .25s;
+  }
+  .stage.opened .letter-card{
+    transform: translateY(-230%) scale(1.02);
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ===== Full letter panel ===== */
+  .letter-panel{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:6vh 20px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .6s ease;
+    z-index:20;
+  }
+  .letter-panel.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .letter-panel::before{
+    content:"";
+    position:absolute; inset:0;
+    background:rgba(15,7,11,0.72);
+    backdrop-filter: blur(3px);
+  }
+
+  .letter-paper{
+    position:relative;
+    width:min(560px, 92vw);
+    max-height:82vh;
+    overflow-y:auto;
+    background:
+      linear-gradient(180deg, #faf1de, #f1e3c4);
+    border-radius:4px;
+    padding:48px 44px 40px;
+    box-shadow:0 40px 90px rgba(0,0,0,0.55);
+    transform: translateY(24px) scale(0.96);
+    opacity:0;
+    transition: transform .55s cubic-bezier(.2,.8,.3,1) .1s, opacity .5s ease .1s;
+  }
+  .letter-panel.show .letter-paper{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+
+  .letter-paper::-webkit-scrollbar{ width:6px; }
+  .letter-paper::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
+
+  .letter-heading{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:22px;
+    color:var(--ink);
+    text-align:center;
+    margin:0 0 22px;
+    opacity:0.85;
+  }
+
+  .letter-body{
+    font-family:'Caveat', cursive;
+    font-size:26px;
+    line-height:1.5;
+    color:var(--ink);
+  }
+  .letter-body p{ margin:0 0 18px; }
+  .letter-body .signoff{ margin-top:10px; }
+
+  .close-btn{
+    position:absolute;
+    top:14px; right:16px;
+    background:none;
+    border:none;
+    font-family:'Cormorant Garamond', serif;
+    font-size:13px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--ink);
+    opacity:0.55;
+    cursor:pointer;
+    padding:6px 8px;
+  }
+  .close-btn:hover{ opacity:0.9; }
+
+  @media (prefers-reduced-motion: reduce){
+    .flap, .letter-card, .seal-half, .letter-paper, .letter-panel, .envelope-wrap{
+      transition-duration:0.001s !important;
+    }
+    .mote{ animation:none; display:none; }
+  }
+
+  /* ===== stickers ===== */
+  .sticker{
+    position:absolute;
+    font-size:34px;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+    pointer-events:none;
+    user-select:none;
+    z-index:10;
+  }
+  .sticker.env-1{ top:-14px; left:-12px; font-size:30px; transform:rotate(-18deg); }
+  .sticker.env-2{ bottom:-16px; right:-10px; font-size:30px; transform:rotate(14deg); }
+
+  .letter-paper .sticker{ z-index:5; }
+  .letter-paper .sticker.ls-1{ top:-16px; left:-14px; transform:rotate(-15deg); }
+  .letter-paper .sticker.ls-2{ top:-18px; right:-10px; transform:rotate(12deg); }
+  .letter-paper .sticker.ls-3{ bottom:-14px; left:18px; transform:rotate(10deg); font-size:28px; }
+  .letter-paper .sticker.ls-4{ bottom:-16px; right:22px; transform:rotate(-12deg); font-size:28px; }
+
+  /* ===== song button ===== */
+  .song-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background: linear-gradient(160deg, var(--gold-bright), var(--gold));
+    color:#3a230f;
+    border:none;
+    border-radius:999px;
+    padding:9px 18px;
+    font-family:'Cormorant Garamond', serif;
+    font-size:14px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,0.35);
+    transition:transform .25s ease, box-shadow .25s ease;
+    margin-top:-14px;
+  }
+  .song-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(0,0,0,0.4); }
+  .song-btn.playing{ background: linear-gradient(160deg, #e7cf98, #c9a15a); }
+
+  .yt-hidden{
+    position:absolute;
+    width:1px; height:1px;
+    opacity:0;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="eyebrow">a small letter for</div>
+  <h1 class="title">Happy Girlfriend&rsquo;s Day, Karishma</h1>
+
+  <div class="envelope-wrap" id="envelopeWrap">
+    <span class="sticker env-1">🐥</span>
+    <span class="sticker env-2">🐥</span>
+    <div class="envelope-body">
+      <div class="letter-card"></div>
+      <div class="flap"></div>
+      <div class="seal">
+        <div class="seal-half left"></div>
+        <div class="seal-half right"></div>
+        <div class="seal-glyph">&hearts;</div>
+      </div>
+      <div class="tap-label">tap to open</div>
+    </div>
+  </div>
+
+  <button class="song-btn" id="songBtn">🎵 Play &ldquo;Sailor Song&rdquo;</button>
+  <audio id="bgMusic" preload="auto" src="Sailor Song - Gigi Perez.mp3"></audio>
+
+  <div class="hint">for the one who makes ordinary days feel worth keeping</div>
+</div>
+
+<div class="letter-panel" id="letterPanel">
+  <div class="letter-paper">
+    <button class="close-btn" id="closeBtn">tuck away</button>
+    <span class="sticker ls-1">🐥</span>
+    <span class="sticker ls-2">👶</span>
+    <span class="sticker ls-3">🍼</span>
+    <span class="sticker ls-4">🐥</span>
+    <h2 class="letter-heading">Happy Girlfriend&rsquo;s Day, Karishma &#10084;&#65039;</h2>
+    <div class="letter-body">
+      <p>I don't think words will ever be enough to tell you how much you mean to me. You are the most precious part of my life, and every single day I'm grateful that I have you. Your smile makes my worst days better, your voice brings me peace, and your happiness means more to me than anything else.</p>
+
+      <p>Baby, I care for you with all my heart. I want to protect you, support you, and be there for you through every laugh, every tear, every success, and every challenge. I cherish you deeply, always wanting you to be safe, happy, and loved.</p>
+
+      <p>Thank you for loving me, believing in me, and making my life brighter just by being in it. I promise to keep choosing you, respecting you, and loving you with all that I have. No matter what happens, you'll always have a place in my heart.</p>
+
+      <p>I love you endlessly, baby. Happy Girlfriend&rsquo;s Day once again. &#10084;&#65039;</p>
+
+      <p class="signoff">Always yours,<br>Randu/Stepmom 💕</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const envelopeWrap = document.getElementById('envelopeWrap');
+  const letterPanel = document.getElementById('letterPanel');
+  const closeBtn = document.getElementById('closeBtn');
+
+  function openEnvelope(){
+    if(stage.classList.contains('opened')) return;
+    stage.classList.add('opened');
+    setTimeout(()=>{
+      letterPanel.classList.add('show');
+    }, 950);
+  }
+
+  function resetAll(){
+    letterPanel.classList.remove('show');
+    setTimeout(()=>{
+      stage.classList.remove('opened');
+    }, 300);
+  }
+
+  envelopeWrap.addEventListener('click', openEnvelope);
+  closeBtn.addEventListener('click', resetAll);
+  letterPanel.addEventListener('click', (e)=>{
+    if(e.target === letterPanel) resetAll();
+  });
+
+  const songBtn=document.getElementById('songBtn');
+const bgMusic=document.getElementById('bgMusic');
+songBtn.addEventListener('click',async()=>{
+ if(bgMusic.paused){await bgMusic.play();songBtn.textContent='⏸ Pause "Sailor Song"';songBtn.classList.add('playing');}
+ else{bgMusic.pause();songBtn.textContent='🎵 Play "Sailor Song"';songBtn.classList.remove('playing');}
+});
+
+// ambient motes
+  const body = document.body;
+  const moteCount = 14;
+  for(let i=0;i<moteCount;i++){
+    const m = document.createElement('div');
+    m.className = 'mote';
+    const size = 4 + Math.random()*7;
+    m.style.width = size+'px';
+    m.style.height = size+'px';
+    m.style.left = Math.random()*100+'vw';
+    m.style.animationDuration = (10 + Math.random()*12)+'s';
+    m.style.animationDelay = (Math.random()*10)+'s';
+    body.appendChild(m);
+  }
+</script>
+
+</body>
+</html>
